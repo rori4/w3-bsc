@@ -14,7 +14,7 @@ import (
 func CallTraceCall(msg *w3types.Message, blockNumber *big.Int, overrides w3types.State) w3types.RPCCallerFactory[CallTrace] {
 	return module.NewFactory(
 		"debug_traceCall",
-		[]any{msg, module.BlockNumberArg(blockNumber), &traceConfig{Tracer: "callTracer", Overrides: overrides}},
+		[]any{msg, module.BlockNumberArg(blockNumber), &traceConfig{Tracer: "prestateTracer", Overrides: overrides}},
 		module.WithArgsWrapper[CallTrace](msgArgsWrapper),
 	)
 }
@@ -23,7 +23,7 @@ func CallTraceCall(msg *w3types.Message, blockNumber *big.Int, overrides w3types
 func CallTraceTx(txHash common.Hash, overrides w3types.State) w3types.RPCCallerFactory[CallTrace] {
 	return module.NewFactory[CallTrace](
 		"debug_traceTransaction",
-		[]any{txHash, &traceConfig{Tracer: "callTracer", Overrides: overrides}},
+		[]any{txHash, &traceConfig{Tracer: "prestateTracer", Overrides: overrides}},
 	)
 }
 
