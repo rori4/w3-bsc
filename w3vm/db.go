@@ -2,6 +2,7 @@ package w3vm
 
 import (
 	"errors"
+	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
 	gethState "github.com/ethereum/go-ethereum/core/state"
@@ -9,8 +10,6 @@ import (
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/trie"
 	"github.com/ethereum/go-ethereum/trie/trienode"
-	"github.com/ethereum/go-ethereum/triedb"
-	"github.com/holiman/uint256"
 	"github.com/lmittmann/w3/internal/crypto"
 )
 
@@ -33,7 +32,7 @@ func newDB(fetcher Fetcher) *db {
 
 func (db *db) OpenTrie(root common.Hash) (gethState.Trie, error) { return db, nil }
 
-func (db *db) OpenStorageTrie(stateRoot common.Hash, addr common.Address, root common.Hash, trie gethState.Trie) (gethState.Trie, error) {
+func (db *db) OpenStorageTrie(stateRoot common.Hash, addr common.Address, root common.Hash) (gethState.Trie, error) {
 	return db, nil
 }
 
@@ -61,7 +60,9 @@ func (db *db) ContractCodeSize(addr common.Address, codeHash common.Hash) (int, 
 
 func (*db) DiskDB() ethdb.KeyValueStore { panic("not implemented") }
 
-func (*db) TrieDB() *triedb.Database { panic("not implemented") }
+func (*db) TrieDB() *trie.Database { panic("not implemented") }
+
+func (*db) NoTries() bool { panic("not implemented") }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // state.Trie methods //////////////////////////////////////////////////////////////////////////////
@@ -85,7 +86,7 @@ func (db *db) GetStorage(addr common.Address, key []byte) ([]byte, error) {
 func (db *db) GetAccount(addr common.Address) (*types.StateAccount, error) {
 	if db.fetcher == nil {
 		return &types.StateAccount{
-			Balance:  new(uint256.Int),
+			Balance:  new(big.Int),
 			CodeHash: types.EmptyCodeHash[:],
 		}, nil
 	}
@@ -112,7 +113,7 @@ func (db *db) GetAccount(addr common.Address) (*types.StateAccount, error) {
 
 	return &types.StateAccount{
 		Nonce:    nonce,
-		Balance:  uint256.MustFromBig(balance),
+		Balance:  balance,
 		CodeHash: codeHash,
 	}, nil
 }

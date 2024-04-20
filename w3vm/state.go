@@ -3,7 +3,7 @@ package w3vm
 import (
 	"encoding/json"
 	"errors"
-	"maps"
+
 	"os"
 	"path/filepath"
 	"sync"
@@ -27,9 +27,17 @@ type forkState struct {
 }
 
 func (s *forkState) Clone() *forkState {
+	cloneOfAccounts := make(map[common.Address]*account, len(s.Accounts))
+	for addr, acc := range s.Accounts {
+		cloneOfAccounts[addr] = acc
+	}
+	cloneOfHeaderHashes := make(map[hexutil.Uint64]common.Hash, len(s.HeaderHashes))
+	for blockNumber, hash := range s.HeaderHashes {
+		cloneOfHeaderHashes[blockNumber] = hash
+	}
 	return &forkState{
-		Accounts:     maps.Clone(s.Accounts),
-		HeaderHashes: maps.Clone(s.HeaderHashes),
+		Accounts:     cloneOfAccounts,
+		HeaderHashes: cloneOfHeaderHashes,
 	}
 }
 

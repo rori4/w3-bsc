@@ -104,7 +104,7 @@ func TestVMApply(t *testing.T) {
 			},
 			WantReceipt: &w3vm.Receipt{
 				GasUsed:   38_853,
-				GasRefund: 9_713,
+				GasRefund: 0,
 				GasLimit:  58_753,
 				Logs: []*types.Log{
 					{

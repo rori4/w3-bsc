@@ -19,7 +19,6 @@ import (
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/params"
-	"github.com/holiman/uint256"
 	"github.com/lmittmann/w3"
 	"github.com/lmittmann/w3/module/eth"
 	"github.com/lmittmann/w3/w3types"
@@ -59,7 +58,7 @@ func New(opts ...Option) (*VM, error) {
 	for addr, acc := range vm.opts.preState {
 		vm.db.SetNonce(addr, acc.Nonce)
 		if acc.Balance != nil {
-			vm.db.SetBalance(addr, uint256.MustFromBig(acc.Balance))
+			vm.db.SetBalance(addr, new(big.Int).Set(acc.Balance))
 		}
 		if acc.Code != nil {
 			vm.db.SetCode(addr, acc.Code)
@@ -117,12 +116,11 @@ func (v *VM) apply(msg *w3types.Message, isCall bool, tracer vm.EVMLogger) (*Rec
 
 	// build receipt
 	receipt := &Receipt{
-		f:         msg.Func,
-		GasUsed:   result.UsedGas,
-		GasRefund: result.RefundedGas,
-		GasLimit:  result.UsedGas + v.db.GetRefund(),
-		Output:    result.ReturnData,
-		Logs:      v.db.GetLogs(txHash, 0, hash0),
+		f:        msg.Func,
+		GasUsed:  result.UsedGas,
+		GasLimit: result.UsedGas + v.db.GetRefund(),
+		Output:   result.ReturnData,
+		Logs:     v.db.GetLogs(txHash, 0, hash0),
 	}
 
 	if err := result.Err; err != nil {
@@ -204,7 +202,7 @@ func (vm *VM) Balance(addr common.Address) (*big.Int, error) {
 	if vm.db.Error() != nil {
 		return nil, fmt.Errorf("%w: failed to fetch balance of %s", ErrFetch, addr)
 	}
-	return balance.ToBig(), nil
+	return balance, nil
 }
 
 // Code returns the code of the given address.
@@ -279,7 +277,7 @@ func (v *VM) buildMessage(msg *w3types.Message, skipAccChecks bool) (*core.Messa
 			Origin:     msg.From,
 			GasPrice:   gasPrice,
 			BlobHashes: msg.BlobHashes,
-			BlobFeeCap: msg.BlobGasFeeCap,
+			// BlobFeeCap: msg.BlobGasFeeCap,
 		},
 		nil
 }

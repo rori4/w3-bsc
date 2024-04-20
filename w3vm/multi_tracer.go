@@ -10,6 +10,11 @@ import (
 // multiEVMLogger is a wrapper for multiple EVMLogger's.
 type multiEVMLogger []vm.EVMLogger
 
+// CaptureSystemTxEnd implements vm.EVMLogger.
+func (m multiEVMLogger) CaptureSystemTxEnd(intrinsicGas uint64) {
+	panic("unimplemented")
+}
+
 func newMultiEVMLogger(tracers []vm.EVMLogger) vm.EVMLogger {
 	// hot path
 	switch len(tracers) {

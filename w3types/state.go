@@ -15,18 +15,18 @@ type State map[common.Address]*Account
 
 // SetGenesisAlloc copies the given [types.GenesisAlloc] to the state and
 // returns it.
-func (s State) SetGenesisAlloc(alloc types.GenesisAlloc) State {
-	s = make(State, len(alloc))
-	for addr, acc := range alloc {
-		s[addr] = &Account{
-			Nonce:   acc.Nonce,
-			Balance: acc.Balance,
-			Code:    acc.Code,
-			Storage: acc.Storage,
-		}
-	}
-	return s
-}
+// func (s State) SetGenesisAlloc(alloc types.GenesisAlloc) State {
+// 	s = make(State, len(alloc))
+// 	for addr, acc := range alloc {
+// 		s[addr] = &Account{
+// 			Nonce:   acc.Nonce,
+// 			Balance: acc.Balance,
+// 			Code:    acc.Code,
+// 			Storage: acc.Storage,
+// 		}
+// 	}
+// 	return s
+// }
 
 type Account struct {
 	Nonce   uint64

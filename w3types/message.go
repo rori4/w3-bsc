@@ -96,24 +96,20 @@ func (msg *Message) SetCallMsg(callMsg ethereum.CallMsg) *Message {
 	msg.Value = callMsg.Value
 	msg.Input = callMsg.Data
 	msg.AccessList = callMsg.AccessList
-	msg.BlobGasFeeCap = callMsg.BlobGasFeeCap
-	msg.BlobHashes = callMsg.BlobHashes
 	return msg
 }
 
 type message struct {
-	From          *common.Address  `json:"from,omitempty"`
-	To            *common.Address  `json:"to,omitempty"`
-	Nonce         hexutil.Uint64   `json:"nonce,omitempty"`
-	GasPrice      *hexutil.Big     `json:"gasPrice,omitempty"`
-	GasFeeCap     *hexutil.Big     `json:"maxFeePerGas,omitempty"`
-	GasTipCap     *hexutil.Big     `json:"maxPriorityFeePerGas,omitempty"`
-	Gas           hexutil.Uint64   `json:"gas,omitempty"`
-	Value         *hexutil.Big     `json:"value,omitempty"`
-	Input         hexutil.Bytes    `json:"data,omitempty"`
-	AccessList    types.AccessList `json:"accessList,omitempty"`
-	BlobGasFeeCap *hexutil.Big     `json:"maxFeePerBlobGas,omitempty"`
-	BlobHashes    []common.Hash    `json:"blobVersionedHashes,omitempty"`
+	From       *common.Address  `json:"from,omitempty"`
+	To         *common.Address  `json:"to,omitempty"`
+	Nonce      hexutil.Uint64   `json:"nonce,omitempty"`
+	GasPrice   *hexutil.Big     `json:"gasPrice,omitempty"`
+	GasFeeCap  *hexutil.Big     `json:"maxFeePerGas,omitempty"`
+	GasTipCap  *hexutil.Big     `json:"maxPriorityFeePerGas,omitempty"`
+	Gas        hexutil.Uint64   `json:"gas,omitempty"`
+	Value      *hexutil.Big     `json:"value,omitempty"`
+	Input      hexutil.Bytes    `json:"data,omitempty"`
+	AccessList types.AccessList `json:"accessList,omitempty"`
 }
 
 // MarshalJSON implements the [json.Marshaler].
@@ -144,12 +140,6 @@ func (msg *Message) MarshalJSON() ([]byte, error) {
 	}
 	if len(msg.AccessList) > 0 {
 		enc.AccessList = msg.AccessList
-	}
-	if msg.BlobGasFeeCap != nil {
-		enc.BlobGasFeeCap = (*hexutil.Big)(msg.BlobGasFeeCap)
-	}
-	if len(msg.BlobHashes) > 0 {
-		enc.BlobHashes = msg.BlobHashes
 	}
 	return json.Marshal(&enc)
 }
@@ -184,12 +174,6 @@ func (msg *Message) UnmarshalJSON(data []byte) error {
 	}
 	if len(dec.AccessList) > 0 {
 		msg.AccessList = dec.AccessList
-	}
-	if dec.BlobGasFeeCap != nil {
-		msg.BlobGasFeeCap = (*big.Int)(dec.BlobGasFeeCap)
-	}
-	if len(dec.BlobHashes) > 0 {
-		msg.BlobHashes = dec.BlobHashes
 	}
 	return nil
 }
